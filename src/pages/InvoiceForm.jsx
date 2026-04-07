@@ -569,17 +569,14 @@ const InvoiceForm = () => {
 
         <Card variant="outlined" sx={{ p: 4, borderRadius: "8px" }}>
           <Grid container spacing={2} alignItems="start">
-            {/* Left Side Header */}
             <Grid size={{xs: 12, md: 6}}>
               <Typography variant="h6" color="text.primary" fontWeight="400">
                 Invoice Totals
               </Typography>
             </Grid>
 
-            {/* Right Side Calculation Section */}
             <Grid size={{xs: 12, md: 6}}>
               <Stack spacing={2}>
-                {/* Sub Total Row */}
                 <Stack
                   direction="row"
                   justifyContent="space-between"
@@ -597,7 +594,6 @@ const InvoiceForm = () => {
                   </Typography>
                 </Stack>
 
-                {/* Tax Row */}
                 <Stack
                   direction="row"
                   justifyContent="space-between"
@@ -647,7 +643,6 @@ const InvoiceForm = () => {
 
                 <Divider sx={{ my: 1 }} />
 
-                {/* Invoice Amount Box - Matches the gray background in your image */}
                 <Box
                   sx={{
                     bgcolor: "#f5f5f5",
