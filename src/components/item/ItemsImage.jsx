@@ -18,7 +18,6 @@ const ItemImage = ({ itemID }) => {
     const fetchImage = async () => {
       try {
         const response = await api.get(`/Item/Picture/${itemID}?t=${Date.now()}`);
-        
         if (response.data && typeof response.data === 'string') {
           const cleanUrl = response.data.replace(/^"|"$/g, '');
           

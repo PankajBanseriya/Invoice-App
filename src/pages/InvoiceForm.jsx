@@ -16,6 +16,7 @@ import {
   TableHead,
   TableRow,
   Paper,
+  Divider,
 } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -567,96 +568,109 @@ const InvoiceForm = () => {
         </Card>
 
         <Card variant="outlined" sx={{ p: 4, borderRadius: "8px" }}>
-          <Typography
-            variant="h6"
-            color="text.secondary"
-            fontWeight="400"
-            mb={3}
-          >
-            Invoice Totals
-          </Typography>
-          <Grid
-            container
-            justifyContent="flex-end"
-            flexDirection={"column"}
-            spacing={2}
-            rowSpacing={1.5}
-          >
-            <Stack width={"100%"} direction={"row"} justifyContent={"end"}>
-              <Grid size={{ xs: 3 }} align="right">
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  fontWeight={500}
+          <Grid container spacing={2} alignItems="start">
+            {/* Left Side Header */}
+            <Grid size={{xs: 12, md: 6}}>
+              <Typography variant="h6" color="text.primary" fontWeight="400">
+                Invoice Totals
+              </Typography>
+            </Grid>
+
+            {/* Right Side Calculation Section */}
+            <Grid size={{xs: 12, md: 6}}>
+              <Stack spacing={2}>
+                {/* Sub Total Row */}
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="center"
                 >
-                  Sub Total
-                </Typography>
-              </Grid>
-              <Grid size={{ xs: 3 }} align="right">
-                <Typography variant="body2" fontWeight={600} fontSize="15px">
-                  ${invoiceTotals.subTotal}
-                </Typography>
-              </Grid>
-            </Stack>
-            <Stack width={"100%"} direction={"row"} justifyContent={"end"}>
-              <Grid size={{ xs: 3 }} align="right">
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  fontWeight={500}
-                  mt={1}
-                >
-                  Tax
-                </Typography>
-              </Grid>
-              <Grid size={{ xs: 3 }} align="right">
-                <Stack direction="row" spacing={1} justifyContent="flex-end">
-                  <TextField
-                    size="small"
-                    value={taxPct}
-                    onChange={(e) => setTaxPct(parseFloat(e.target.value))}
-                    sx={{ width: "80px" }}
-                    type="number"
-                    inputProps={{ step: 0.1, min: 0 }}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">%</InputAdornment>
-                      ),
-                    }}
-                  />
-                  <TextField
-                    size="small"
-                    value={taxAmt.toFixed(2)}
-                    onChange={(e) => setTaxAmt(parseFloat(e.target.value))}
-                    sx={{ width: "80px" }}
-                    type="number"
-                    disabled
-                    inputProps={{ step: 10, min: 0 }}
-                  />
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    fontWeight={500}
+                  >
+                    Sub Total
+                  </Typography>
+                  <Typography variant="body1" fontWeight={600} sx={{ pr: 2 }}>
+                    ${invoiceTotals.subTotal}
+                  </Typography>
                 </Stack>
-              </Grid>
-            </Stack>
-            <Stack width={"100%"} direction={"row"} justifyContent={"end"}>
-              <Grid size={{ xs: 4 }}>
-                <Card
-                  variant="filled"
+
+                {/* Tax Row */}
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    fontWeight={500}
+                  >
+                    Tax
+                  </Typography>
+                  <Stack direction="row" spacing={1}>
+                    <TextField
+                      size="small"
+                      value={taxPct}
+                      onChange={(e) =>
+                        setTaxPct(parseFloat(e.target.value) || 0)
+                      }
+                      sx={{ width: "100px", bgcolor: "white" }}
+                      type="number"
+                      inputProps={{
+                        step: 0.1,
+                        min: 0,
+                        style: { textAlign: "right" },
+                      }}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">%</InputAdornment>
+                        ),
+                      }}
+                    />
+                    <TextField
+                      size="small"
+                      value={taxAmt.toFixed(2)}
+                      sx={{ width: "100px", bgcolor: "#fcfcfc" }}
+                      disabled
+                      inputProps={{ style: { textAlign: "right" } }}
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">$</InputAdornment>
+                        ),
+                      }}
+                    />
+                  </Stack>
+                </Stack>
+
+                <Divider sx={{ my: 1 }} />
+
+                {/* Invoice Amount Box - Matches the gray background in your image */}
+                <Box
                   sx={{
-                    bgcolor: "#f8f8f8",
-                    p: 3,
+                    bgcolor: "#f5f5f5",
+                    p: 2.5,
+                    borderRadius: "12px",
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
                   }}
                 >
-                  <Typography variant="h6" fontWeight="400">
+                  <Typography
+                    variant="h6"
+                    color="text.primary"
+                    fontWeight="500"
+                  >
                     Invoice Amount
                   </Typography>
                   <Typography variant="h4" fontWeight="600">
                     ${invoiceTotals.invoiceAmount}
                   </Typography>
-                </Card>
-              </Grid>
-            </Stack>
+                </Box>
+              </Stack>
+            </Grid>
           </Grid>
         </Card>
       </Stack>

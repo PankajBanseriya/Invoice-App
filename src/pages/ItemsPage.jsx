@@ -142,9 +142,8 @@ const ItemsPage = () => {
       disableReorder: true,
       headerAlign: "right",
       align: "right",
-      minWidth: 120,
+      width: 120,
       hideable: false, 
-      reorderable: false, 
       resizable: false,
       headerClassName: "actions",
       renderCell: (params) => (
@@ -289,15 +288,7 @@ const ItemsPage = () => {
             columns={columns}
             getRowHeight={() => "auto"}
             hideFooter
-            rowReordering
-            disableColumnReorder={false}
             
-            initialState={{
-              pinnedColumns: {
-                left: ["picture"], 
-                right: ["actions"], 
-              },
-            }}
             sx={{
               border: 0,
               px: 2,
