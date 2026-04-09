@@ -21,6 +21,8 @@ import { useNavigate } from "react-router-dom";
 import { FaColumns, FaDownload } from "react-icons/fa";
 import { PieChart } from "@mui/x-charts/PieChart";
 import { DataGridPro as DataGrid } from "@mui/x-data-grid-pro";
+import { printInvoice } from "../utils/printInvoice";
+import toast from "react-hot-toast";
 
 const Invoices = () => {
   const navigate = useNavigate();
@@ -98,8 +100,8 @@ const Invoices = () => {
           color="primary"
           sx={{
             fontSize: 14,
-            cursor: 'pointer',
-            "&:hover": { textDecoration: 'underline' },
+            cursor: "pointer",
+            "&:hover": { textDecoration: "underline" },
           }}
           onClick={() =>
             navigate("/invoices/form", {
@@ -187,7 +189,16 @@ const Invoices = () => {
           >
             <Edit fontSize="small" />
           </IconButton>
-          <IconButton size="small">
+          <IconButton
+            size="small"
+            onClick={async () => {
+              try {
+                await printInvoice(params.row.invoiceID);
+              } catch (e) {
+                toast.error("Failed to generate print view");
+              }
+            }}
+          >
             <Print fontSize="small" />
           </IconButton>
           <IconButton
@@ -345,7 +356,6 @@ const Invoices = () => {
                 justifyContent: "center",
               }}
             >
-              {console.log(pieData.length)}
               {isLoadingTopItems ? (
                 <Typography variant="caption">Loading...</Typography>
               ) : pieData.length > 1 ? (
@@ -376,7 +386,13 @@ const Invoices = () => {
         </Grid>
       </Grid>
 
-      <Stack direction="row" justifyContent="space-between" flexWrap={"wrap"} mb={2} gap={2}>
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        flexWrap={"wrap"}
+        mb={2}
+        gap={2}
+      >
         <OutlinedInput
           size="small"
           placeholder="Search Invoice No, Customer..."
