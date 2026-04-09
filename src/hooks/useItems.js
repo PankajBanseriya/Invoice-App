@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "../api/axios";
 import toast from "react-hot-toast";
+import { imageCache } from "../components/item/ItemsImage";
 
 export const useItems = () => {
   const queryClient = useQueryClient();
@@ -23,7 +24,10 @@ export const useItems = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["items"] });
     },
-    onError: () => toast.error("Failed to add item."),
+    onError: (err) => {
+      const errorMessage = err.response?.data || "Failed to add item.";
+      toast.error(errorMessage);
+    },
   });
 
   // Edit Item
@@ -47,6 +51,29 @@ export const useItems = () => {
       toast.error(err.response.data || "Could not delete item."),
   });
 
+  // Update Item Picture
+  const updatePictureMutation = useMutation({
+    mutationFn: async ({ itemID, file }) => {
+      const imageData = new FormData();
+      imageData.append("ItemID", itemID);
+      imageData.append("File", file);
+      return api.post("/Item/UpdateItemPicture", imageData);
+    },
+    onSuccess: (data, variables) => {
+      if (variables.itemID) {
+        delete imageCache[variables.itemID];
+      }
+      queryClient.invalidateQueries({ queryKey: ["items"] });
+      queryClient.invalidateQueries({
+        queryKey: ["itemPicture", variables.itemID],
+      });
+    },
+    onError: (err) => {
+      const errorMessage = err.response?.data || "Image upload failed.";
+      toast.error(errorMessage);
+    },
+  });
+
   return {
     items: itemsQuery.data || [],
     isLoading: itemsQuery.isLoading,
@@ -61,5 +88,7 @@ export const useItems = () => {
 
     deleteItem: deleteMutation.mutate,
     isDeleting: deleteMutation.isPending,
+
+    updatePictureAsync: updatePictureMutation.mutateAsync,
   };
 };

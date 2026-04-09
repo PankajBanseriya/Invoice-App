@@ -32,26 +32,26 @@ const ItemModal = ({ open, handleClose, onSave, activeItem }) => {
   const [logoPreview, setLogoPreview] = useState(null);
   const [errors, setErrors] = useState({});
   const [isSaving, setIsSaving] = useState(false);
-  const { addItem, addItemAsync, updateItem } = useItems();
+  const { addItem, addItemAsync, updateItem, updatePictureAsync } = useItems();
 
   const fetchExistingImage = async (id) => {
-  try {
-    if (imageCache[id]) {
-      setLogoPreview(imageCache[id]);
-      return;
-    }
-    const response = await api.get(`/Item/Picture/${id}`);
-    if (response.data && typeof response.data === "string") {
-      const cleanUrl = response.data.replace(/^"|"$/g, "");
-      setLogoPreview(cleanUrl);
-    } else {
+    try {
+      if (imageCache[id]) {
+        setLogoPreview(imageCache[id]);
+        return;
+      }
+      const response = await api.get(`/Item/Picture/${id}`);
+      if (response.data && typeof response.data === "string") {
+        const cleanUrl = response.data.replace(/^"|"$/g, "");
+        setLogoPreview(cleanUrl);
+      } else {
+        setLogoPreview(null);
+      }
+    } catch (error) {
+      console.error("Error fetching existing image", error);
       setLogoPreview(null);
     }
-  } catch (error) {
-    console.error("Error fetching existing image", error);
-    setLogoPreview(null); 
-  }
-};
+  };
 
   useEffect(() => {
     setLogoPreview(null);
@@ -124,93 +124,34 @@ const ItemModal = ({ open, handleClose, onSave, activeItem }) => {
       salesRate: parseFloat(formData.salesRate || 0),
       discountPct: parseFloat(formData.discountPct || 0),
     };
-
-    if (activeItem) {
-      if (logoFile) {
-        const imageData = new FormData();
-        imageData.append("ItemID", activeItem.itemID);
-        imageData.append("File", logoFile);
-
-        try {
-          await api.post("/Item/UpdateItemPicture", imageData);
-          delete imageCache[activeItem.itemID];
-        } catch (err) {
-          console.error("Image update failed", err);
+    try {
+      if (activeItem) {
+        if (logoFile) {
+          await updatePictureAsync({
+            itemID: activeItem.itemID,
+            file: logoFile,
+          });
         }
-      }
 
-      payload.itemID = activeItem.itemID;
-      payload.updatedOn = activeItem.updatedOn;
-      await updateItem(payload);
-    } else {
-      const response = await addItemAsync(payload);
-      const newItemId = response.data.primaryKeyID;
-      if (logoFile && newItemId) {
-        const imageData = new FormData();
-        imageData.append("ItemID", newItemId);
-        imageData.append("File", logoFile);
-
-        try {
-          await api.post("/Item/UpdateItemPicture", imageData);
-          delete imageCache[activeItem.itemID];
-        } catch (err) {
-          console.error("Image update failed", err);
+        payload.itemID = activeItem.itemID;
+        payload.updatedOn = activeItem.updatedOn;
+        await updateItem(payload);
+      } else {
+        const response = await addItemAsync(payload);
+        const newItemId = response.data.primaryKeyID;
+        if (logoFile && newItemId) {
+          await updatePictureAsync({ itemID: newItemId, file: logoFile });
         }
+        toast.success("Item added successfully!");
       }
-      toast.success("Item added successfully!");
+      handleClose();
+    } catch (err) {
+      console.log("Save failed", err);
+    } finally {
+      setIsSaving(false);
     }
     handleClose();
-    setIsSaving(false);
   };
-
-  // const handleSubmit = async () => {
-  //   if (!validate()) return;
-  //   setIsSaving(true); // Start Loader
-
-  //   const payload = {
-  //     itemName: formData.itemName,
-  //     description: formData.description,
-  //     salesRate: parseFloat(formData.salesRate || 0),
-  //     discountPct: parseFloat(formData.discountPct || 0),
-  //   };
-
-  //   try {
-  //     if (activeItem) {
-  //       // --- EDIT LOGIC ---
-  //       payload.itemID = activeItem.itemID;
-  //       payload.updatedOn = activeItem.updatedOn;
-
-  //       if (logoFile) {
-  //         await uploadImage(activeItem.itemID);
-  //       }
-  //       // 1. Update Item Data
-  //       await onSave(payload);
-
-  //       // 2. Update Image if a new file was selected
-  //       toast.success("Item updated successfully!");
-  //     } else {
-  //       // --- CREATE LOGIC ---
-  //       // 1. Create the Item and wait for the response to get the new ID
-  //       const responseData = await addItemAsync(payload);
-  //       const newId = responseData.primaryKeyID;
-
-  //       // 2. Upload the Image using that new ID
-  //       if (logoFile && newId) {
-  //         await uploadImage(newId);
-  //       }
-  //       toast.success("Item created successfully!");
-  //     }
-
-  //     // After success, the 'invalidateQueries' in the hook will
-  //     // automatically trigger the UI refresh.
-  //     handleClose();
-  //   } catch (err) {
-  //     console.error("Save failed:", err);
-  //     toast.error(err.response?.data || "An error occurred while saving.");
-  //   } finally {
-  //     setIsSaving(false); // Stop Loader
-  //   }
-  // };
 
   return (
     <Dialog
