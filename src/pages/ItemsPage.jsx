@@ -25,12 +25,16 @@ import ItemModal from "./ItemModal";
 import { IoArrowBack } from "react-icons/io5";
 import ItemImage from "../components/item/ItemsImage";
 import { DataGridPro as DataGrid } from "@mui/x-data-grid-pro";
+import ConfirmDeleteModal from "../components/common/ConfirmDeleteModal";
 
 const ItemsPage = () => {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [activeItem, setActiveItem] = useState(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [selectedItemId, setSelectedItemId] = useState(null);
+
   const { items, isLoading, isError, addItem, updateItem, deleteItem } =
     useItems();
   const apiRef = useGridApiRef();
@@ -57,6 +61,17 @@ const ItemsPage = () => {
   const capitalizeFirst = (text) => {
     if (!text) return "";
     return text.charAt(0).toUpperCase() + text.slice(1);
+  };
+
+  const handleDeleteClick = (id) => {
+    setSelectedItemId(id);
+    setDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    deleteItem(selectedItemId);
+    setDeleteModalOpen(false);
+    setSelectedItemId(null);
   };
 
   const columns = [
@@ -154,7 +169,7 @@ const ItemsPage = () => {
 
           <IconButton
             size="small"
-            onClick={() => deleteItem(params.row.itemID)}
+            onClick={() => handleDeleteClick(params.row.itemID)}
           >
             <DeleteIcon />
           </IconButton>
@@ -308,6 +323,14 @@ const ItemsPage = () => {
         handleClose={() => setModalOpen(false)}
         onSave={handleSave}
         activeItem={activeItem}
+      />
+
+      <ConfirmDeleteModal
+        open={deleteModalOpen}
+        handleClose={() => setDeleteModalOpen(false)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Item"
+        message="Are you sure you want to delete this item? This will remove it from your catalog permanently."
       />
     </Box>
   );

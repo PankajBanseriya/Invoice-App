@@ -22,6 +22,7 @@ import { FaColumns, FaDownload } from "react-icons/fa";
 import { PieChart } from "@mui/x-charts/PieChart";
 import { DataGridPro as DataGrid } from "@mui/x-data-grid-pro";
 import { printInvoice } from "../utils/printInvoice";
+import ConfirmDeleteModal from "../components/common/ConfirmDeleteModal";
 import toast from "react-hot-toast";
 
 const Invoices = () => {
@@ -29,6 +30,8 @@ const Invoices = () => {
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState("Month");
   const [customDates, setCustomDates] = useState({ from: null, to: null });
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [selectedInvoiceId, setSelectedInvoiceId] = useState(null);
   const apiRef = useGridApiRef();
 
   const dateParams = useMemo(() => {
@@ -87,6 +90,17 @@ const Invoices = () => {
       label: item.itemName,
     }));
   }, [topItems]);
+
+  const handleDeleteClick = (id) => {
+    setSelectedInvoiceId(id);
+    setDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    deleteInvoice(selectedInvoiceId);
+    setDeleteModalOpen(false);
+    setSelectedInvoiceId(null);
+  };
 
   const columns = [
     {
@@ -203,7 +217,7 @@ const Invoices = () => {
           </IconButton>
           <IconButton
             size="small"
-            onClick={() => deleteInvoice(params.row.invoiceID)}
+            onClick={() => handleDeleteClick(params.row.invoiceID)}
           >
             <Delete fontSize="small" />
           </IconButton>
@@ -510,6 +524,14 @@ const Invoices = () => {
           }}
         />
       </Paper>
+
+      <ConfirmDeleteModal
+        open={deleteModalOpen}
+        handleClose={() => setDeleteModalOpen(false)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Invoice"
+        message="Are you sure you want to delete this invoice? All associated data will be removed."
+      />
     </Box>
   );
 };
