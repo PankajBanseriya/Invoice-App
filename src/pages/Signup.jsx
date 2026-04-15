@@ -60,11 +60,11 @@ export default function Signup() {
     const maxSize = 5 * 1024 * 1024;
 
     if (!allowedTypes.includes(file.type)) {
-      alert("Only JPG/PNG allowed.");
+      toast.error("Only JPG/PNG allowed.");
       return;
     }
     if (file.size > maxSize) {
-      alert("File size must be less then 5MB.");
+      toast.error("File size must be less then 5MB.");
       return;
     }
 

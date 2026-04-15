@@ -107,8 +107,8 @@ const ItemModal = ({ open, handleClose, onSave, activeItem }) => {
     const isInvalidType = !["image/jpeg", "image/png"].includes(file.type);
     const isTooLarge = file.size > 5 * 1024 * 1024;
 
-    if (isInvalidType) return alert("Only PNG/JPG allowed.");
-    if (isTooLarge) return alert("Max size is 5MB.");
+    if (isInvalidType) return toast.error("Only PNG/JPG allowed.");
+    if (isTooLarge) return toast.error("Max size is 5MB.");
 
     setLogoFile(file);
     setLogoPreview(URL.createObjectURL(file));

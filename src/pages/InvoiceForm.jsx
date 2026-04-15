@@ -27,6 +27,7 @@ import ItemSelect from "../components/item/ItemsSelect";
 import { useInvoices } from "../hooks/useInvoices";
 import { useItems } from "../hooks/useItems";
 import api from "../api/axios";
+import toast from "react-hot-toast";
 
 const defaultRow = () => ({
   id: Date.now(),
@@ -193,13 +194,13 @@ const InvoiceForm = () => {
 
   const handleSubmit = async () => {
     if (!invoiceDetails.customerName) {
-      alert("Customer Name is required");
+      toast.error("Customer Name is required");
       return;
     }
 
     const validLines = lineItems.filter((line) => line.itemObject);
     if (validLines.length === 0) {
-      alert("Please add at least one item to the invoice");
+      toast.error("Please add at least one item to the invoice");
       return;
     }
 
