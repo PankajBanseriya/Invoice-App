@@ -1,6 +1,6 @@
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import InvoiceDashboard from "./pages/InvoiceDashboard";
 import Header from "./components/common/Header";
@@ -25,7 +25,7 @@ function App() {
           <Route path="/invoices/form" element={<InvoiceForm />} />
         </Route>
 
-        <Route path="*" element={<Login />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <Footer />
     </div>
