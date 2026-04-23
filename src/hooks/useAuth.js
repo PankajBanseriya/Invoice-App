@@ -39,8 +39,13 @@ export const useAuth = () => {
       toast.success("Login Successful!");
     },
     onError: (error) => {
+<<<<<<< HEAD
       console.error(error.message)
       toast.error("Invalid email or password.");
+=======
+      console.log(error.response);
+      toast.error("Invalid email or password");
+>>>>>>> d1858b489ab49e19eff637570e4ac400d3424729
     },
   });
 
