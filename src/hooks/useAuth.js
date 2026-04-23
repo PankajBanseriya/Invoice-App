@@ -40,7 +40,7 @@ export const useAuth = () => {
     },
     onError: (error) => {
       console.log(error.response);
-      toast.error(error.response?.data || "Login failed");
+      toast.error("Invalid email or password");
     },
   });
 
