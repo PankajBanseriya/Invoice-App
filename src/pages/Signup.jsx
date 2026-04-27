@@ -22,6 +22,7 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import toast from "react-hot-toast";
 
 export default function Signup() {
   const [formData, setFormData] = useState({
@@ -44,11 +45,10 @@ export default function Signup() {
   const navigate = useNavigate();
   const { signup, isSigningUp } = useAuth();
 
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData(prev => ({ ...prev, [name]: value }));
     if (errors[name]) setErrors({ ...errors, [name]: "" });
   };
 
@@ -64,7 +64,7 @@ export default function Signup() {
       return;
     }
     if (file.size > maxSize) {
-      toast.error("File size must be less then 5MB.");
+      toast.error("File size must be less than 5MB.");
       return;
     }
 
@@ -201,12 +201,13 @@ export default function Signup() {
                   inputProps={{ maxLength: 50 }}
                 />
 
-                <InputLabel sx={{ mt: 2, fontSize: "0.9rem" }}>
+                <InputLabel sx={{ mt: 2, fontSize: "0.9rem" }} htmlFor="LastName">
                   Last Name*
                 </InputLabel>
                 <TextField
                   fullWidth
                   name="LastName"
+                  id="LastName"
                   value={formData.LastName}
                   onChange={handleChange}
                   placeholder="Enter last name"
@@ -217,12 +218,13 @@ export default function Signup() {
                   inputProps={{ maxLength: 50 }}
                 />
 
-                <InputLabel sx={{ mt: 2, fontSize: "0.9rem" }}>
+                <InputLabel sx={{ mt: 2, fontSize: "0.9rem" }} htmlFor="Email">
                   Email*
                 </InputLabel>
                 <TextField
                   fullWidth
                   name="Email"
+                  id="Email"
                   value={formData.Email}
                   onChange={handleChange}
                   placeholder="Enter your Email"
@@ -232,13 +234,14 @@ export default function Signup() {
                   helperText={errors.Email}
                 />
 
-                <InputLabel sx={{ mt: 2, mb: 1, fontSize: "0.9rem" }}>
+                <InputLabel sx={{ mt: 2, mb: 1, fontSize: "0.9rem" }} htmlFor="Password">
                   Password*
                 </InputLabel>
 
                 <TextField
                   fullWidth
                   name="Password"
+                  id="Password"
                   inputProps={{ maxLength: 20 }}
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter password"
@@ -293,12 +296,13 @@ export default function Signup() {
                 </Typography>
                 <Divider sx={{ my: 1 }} />
 
-                <InputLabel sx={{ mt: 2, fontSize: "0.9rem" }}>
+                <InputLabel sx={{ mt: 2, fontSize: "0.9rem" }} htmlFor="CompanyName">
                   Company Name*
                 </InputLabel>
                 <TextField
                   fullWidth
                   name="CompanyName"
+                  id="CompanyName"
                   value={formData.CompanyName}
                   onChange={handleChange}
                   placeholder="Enter company name"
@@ -309,7 +313,7 @@ export default function Signup() {
                   inputProps={{ maxLength: 100 }}
                 />
 
-                <InputLabel sx={{ mt: 2, fontSize: "0.9rem" }}>
+                <InputLabel sx={{ mt: 2, fontSize: "0.9rem" }} htmlFor="CompanyLogo">
                   Company Logo
                 </InputLabel>
                 <Box
@@ -342,16 +346,18 @@ export default function Signup() {
                       accept="image/png, image/jpeg"
                       type="file"
                       onChange={handleFile}
+                      id="CompanyLogo"
                     />
                   </Button>
                 </Box>
 
-                <InputLabel sx={{ mt: 2, fontSize: "0.9rem" }}>
+                <InputLabel sx={{ mt: 2, fontSize: "0.9rem" }} htmlFor="Address">
                   Address*
                 </InputLabel>
                 <TextField
                   fullWidth
                   name="Address"
+                  id="Address"
                   value={formData.Address}
                   onChange={handleChange}
                   placeholder="Enter company address"
@@ -366,12 +372,13 @@ export default function Signup() {
 
                 <Grid container spacing={2}>
                   <Grid size={{ xs: 12, md: 6 }}>
-                    <InputLabel sx={{ mt: 2, fontSize: "0.9rem" }}>
+                    <InputLabel sx={{ mt: 2, fontSize: "0.9rem" }} htmlFor="City">
                       City*
                     </InputLabel>
                     <TextField
                       fullWidth
                       name="City"
+                      id="City"
                       value={formData.City}
                       onChange={handleChange}
                       placeholder="Enter City"
@@ -383,12 +390,13 @@ export default function Signup() {
                     />
                   </Grid>
                   <Grid size={{ xs: 12, md: 6 }}>
-                    <InputLabel sx={{ mt: 2, fontSize: "0.9rem" }}>
+                    <InputLabel sx={{ mt: 2, fontSize: "0.9rem" }} htmlFor="ZipCode">
                       Zip Code*
                     </InputLabel>
                     <TextField
                       fullWidth
                       name="ZipCode"
+                      id="ZipCode"
                       value={formData.ZipCode}
                       onChange={handleChange}
                       placeholder="6 digits"
@@ -401,12 +409,13 @@ export default function Signup() {
                   </Grid>
                 </Grid>
 
-                <InputLabel sx={{ mt: 2, fontSize: "0.9rem" }}>
+                <InputLabel sx={{ mt: 2, fontSize: "0.9rem" }} htmlFor="Industry">
                   Industry
                 </InputLabel>
                 <TextField
                   fullWidth
                   name="Industry"
+                  id="Industry"
                   value={formData.Industry}
                   onChange={handleChange}
                   placeholder="Industry Type"
@@ -415,12 +424,13 @@ export default function Signup() {
                   inputProps={{ maxLength: 50 }}
                 />
 
-                <InputLabel sx={{ mt: 2, fontSize: "0.9rem" }}>
+                <InputLabel sx={{ mt: 2, fontSize: "0.9rem" }} htmlFor="CurrencySymbol">
                   Currency Symbol*
                 </InputLabel>
                 <TextField
                   fullWidth
                   name="CurrencySymbol"
+                  id="CurrencySymbol"
                   value={formData.CurrencySymbol}
                   onChange={handleChange}
                   placeholder="$, €, AED"
